@@ -1,0 +1,4 @@
+vagrant
+=======
+
+Virtual machine
