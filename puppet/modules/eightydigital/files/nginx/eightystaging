@@ -4,7 +4,7 @@ server {
     gzip on;
     gzip_min_length 1000;
 
-    root /var/www
+    root /var/www;
 
     location / {
         index index.php index.html;
