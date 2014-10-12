@@ -31,6 +31,13 @@ class eightydigital {
     source => 'puppet:///modules/eightydigital/nginx/eightystaging',
   }
 
+  file { 'vagrant-nginx-hotrefis':
+    path => '/etc/nginx/sites-available/hotrefis',
+    ensure => file,
+    require => Package['nginx'],
+    source => 'puppet:///modules/eightydigital/nginx/hotrefis',
+  }
+
   # Disable the default nginx vhost
   file { 'default-nginx-disable':
     path => '/etc/nginx/sites-enabled/default',
@@ -46,6 +53,18 @@ class eightydigital {
     notify => Service['nginx'],
     require => [
       File['vagrant-nginx-eightystaging'],
+      File['default-nginx-disable'],
+    ],
+  }
+
+  # Symlink our vhost in sites-enabled to enable it
+  file { 'vagrant-nginx-hotrefis-enable':
+    path => '/etc/nginx/sites-enabled/hotrefis',
+    target => '/etc/nginx/sites-available/hotrefis',
+    ensure => link,
+    notify => Service['nginx'],
+    require => [
+      File['vagrant-nginx-hotrefis'],
       File['default-nginx-disable'],
     ],
   }

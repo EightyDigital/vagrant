@@ -1,0 +1,29 @@
+server {
+    listen 80;
+    server_name hotrefis.local.eightystaging.com;
+    gzip on;
+    gzip_min_length 1000;
+
+    root /var/www/hotrefis/web;
+
+    location / {
+        try_files $uri @rewriteapp;
+    }
+
+    location @rewriteapp {
+        rewrite ^(.*) /app_dev.php/$1 last;
+    }
+
+    location ~ ^/app_dev\.php(/|$) {
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param HTTPS off;
+        fastcgi_param HOST_DEBUG 1;
+        fastcgi_param HOST_DEBUG dev;
+    }
+
+    # error_log /var/www/hotefis/app/logs/nginx-error.log;
+    # access_log /var/www/hotrefis/app/logs/nginx-access.log;
+}
